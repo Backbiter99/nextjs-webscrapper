@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
-import { extractInfo } from "./utils";
+import { extractDynamicInfo, extractInfo } from "./utils";
 
 export async function scrapeAmazon(url: string) {
     if (!url.includes("amazon.in")) {
@@ -27,15 +27,37 @@ export async function scrapeAmazon(url: string) {
                 $("#productDetails_techSpec_section_1")
             );
             productInfo = extractProductInfo;
-            console.log(`productInfo:${productInfo}`);
+            // console.log(`productInfo:${productInfo}`);
         } catch (error) {
             console.error("Error while getting productInfo: ", error);
         }
+
+        const dynamicInfo = await extractDynamicInfo(url);
+        const productImg = dynamicInfo?.imageUrl;
+        const manufacturerImg = dynamicInfo?.manufacturerImg;
+
+        // console.log(`productImg: ${productImg}`);
+        console.log(`manufacturerImg: ${manufacturerImg}`);
+
+        return NextResponse.json(
+            {
+                productName,
+                rating,
+                numRatings,
+                price,
+                discount,
+                bankOffers,
+                aboutItem,
+                productInfo,
+                productImg,
+                manufacturerImg,
+            },
+            { status: 200 }
+        );
     } catch (error) {
         return NextResponse.json(
             { message: "request to amazon failed" },
             { status: 500 }
         );
     }
-    return NextResponse.json({ message: "hi there from amazon scraper" });
 }

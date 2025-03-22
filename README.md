@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Amazon Scraper Project
+
+This project uses Puppeteer to scrape data from Amazon product pages.
 
 ## Getting Started
 
-First, run the development server:
+### Step 1: Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repository-url>
+cd <your-project-directory>
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Step 2: Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Step 3: Run the Scraper
 
-## Learn More
+```bash
+npm run dev # or node your_main_script.js
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Troubleshooting
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Chrome Not Found Error
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+You might encounter the following error or something similar:
 
-## Deploy on Vercel
+```
+Error: Could not find Chrome (ver. 134.0.6998.35). This can occur if either
+ 1. you did not perform an installation before running the script (e.g. `npx puppeteer browsers install chrome`) or
+ 2. your cache path is incorrectly configured (which is: /home/prajwal/.cache/puppeteer).
+For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.
+    at async extractDynamicInfo (lib/utils.ts:17:24)
+    at async scrapeAmazon (lib/scrapeAmazon.ts:35:28)
+    at async scraper (lib/scraper.ts:7:21)
+    at async POST (app/api/scrape/route.ts:8:21)
+  15 | export async function extractDynamicInfo(url: string) {
+  16 |     try {
+> 17 |         const browser = await puppeteer.launch();
+     |                        ^
+  18 |         const page = await browser.newPage();
+  19 |
+  20 |         await page.goto(url, { waitUntil: "networkidle2" });
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This error indicates that Puppeteer cannot find a compatible Chrome browser installation.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Solutions
+
+1. **Install Chrome for Puppeteer**
+
+    Run the following command to download and install a compatible version of Chrome:
+
+    ```bash
+    npx puppeteer browsers install chrome
+    ```
+
+2. **Manual Install of Chrome using Puppeteer's Install Script**
+
+    In some cases, the above command may fail. As a workaround, navigate to the node_modules directory, and run Puppeteer's install script directly.
+
+    ```bash
+    node node_modules/puppeteer/install.mjs
+    ```
+
+3. **Check Cache Path**
+
+    If you have a custom cache path, ensure it's correctly configured.
+
+    Refer to the official Puppeteer configuration guide for more information:
+    https://pptr.dev/guides/configuration
