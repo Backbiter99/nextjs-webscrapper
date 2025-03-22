@@ -35,6 +35,7 @@ export async function scrapeAmazon(url: string) {
         const dynamicInfo = await extractDynamicInfo(url);
         const productImg = dynamicInfo?.imageUrl;
         const manufacturerImg = dynamicInfo?.manufacturerImg;
+        const reviews = dynamicInfo?.reviews;
 
         // console.log(`productImg: ${productImg}`);
         // console.log(`manufacturerImg: ${manufacturerImg}`);
@@ -51,6 +52,7 @@ export async function scrapeAmazon(url: string) {
                 productInfo,
                 productImg,
                 manufacturerImg,
+                reviews,
             },
             { status: 200 }
         );

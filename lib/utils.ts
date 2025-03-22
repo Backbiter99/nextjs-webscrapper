@@ -45,9 +45,15 @@ export async function extractDynamicInfo(url: string) {
             );
         });
 
+        const reviews = await page.evaluate(() => {
+            return Array.from(document.querySelectorAll(".review-text-content"))
+                .map((el) => el.textContent?.trim())
+                .filter(Boolean);
+        });
+
         await browser.close();
 
-        return { imageUrl, manufacturerImg };
+        return { imageUrl, manufacturerImg, reviews };
     } catch (error) {
         console.error("Error while extracting dynamic info: ", error);
 

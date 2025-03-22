@@ -1,8 +1,9 @@
 "use client";
 
+import { DisplayProductInfo } from "@/components/DisplayProductInfo";
+import ReviewSummary from "@/components/ReviewSummary";
 import axios from "axios";
-import { log } from "console";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 interface IProduct {
     productName: string;
@@ -15,7 +16,7 @@ interface IProduct {
     productInfo: string;
     productImg?: string[];
     manufacturerImg: string[];
-    reviewSummary?: string;
+    reviews?: string[];
 }
 
 export default function Home() {
@@ -72,8 +73,10 @@ export default function Home() {
                     <h3 className="font-semibold mt-2">About this item:</h3>
                     <p>{product.aboutItem}</p>
 
-                    {/* <h3 className="font-semibold mt-2">Product Information:</h3>
-                    <ul>
+                    <h3 className="font-semibold mt-2">Product Information:</h3>
+                    {product.productInfo}
+                    {/* <DisplayProductInfo productInfo={product.productInfo} /> */}
+                    {/* <ul>
                         {Object.entries(product.productInfo).map(
                             ([key, value]) => (
                                 <li key={key}>
@@ -111,11 +114,13 @@ export default function Home() {
                     </div>
 
                     <h3 className="font-semibold mt-2">AI Review Summary:</h3>
-                    <p>
-                        {product.reviewSummary
-                            ? product.reviewSummary
-                            : "No summary"}
-                    </p>
+                    <div>
+                        {product.reviews ? (
+                            <ReviewSummary reviewArray={product.reviews} />
+                        ) : (
+                            "No summary"
+                        )}
+                    </div>
                 </div>
             )}
         </div>
