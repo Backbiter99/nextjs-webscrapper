@@ -37,7 +37,7 @@ export async function scrapeAmazon(url: string) {
         const manufacturerImg = dynamicInfo?.manufacturerImg;
 
         // console.log(`productImg: ${productImg}`);
-        console.log(`manufacturerImg: ${manufacturerImg}`);
+        // console.log(`manufacturerImg: ${manufacturerImg}`);
 
         return NextResponse.json(
             {

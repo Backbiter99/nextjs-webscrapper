@@ -19,11 +19,25 @@ export async function extractDynamicInfo(url: string) {
 
         await page.goto(url, { waitUntil: "networkidle2" });
 
+        // const imageUrl = await page.evaluate(() => {
+        //     return Array.from(document.querySelectorAll("img")).map(
+        //         (img) => img.src
+        //     );
+        // });
+
         const imageUrl = await page.evaluate(() => {
-            return Array.from(document.querySelectorAll("img")).map(
-                (img) => img.src
-            );
+            return Array.from(document.querySelectorAll("img"))
+                .filter((img) => img.src.includes("m.media-amazon.com/images/"))
+                .map((img) => img.src);
         });
+
+        // const imageUrl = await page.$$eval("img.a-button-text", (imgs) =>
+        //     imgs.map(
+        //         (img) =>
+        //             img.getAttribute("data-lazyimage") ||
+        //             img.getAttribute("src")
+        //     )
+        // );
 
         const manufacturerImg = await page.evaluate(() => {
             return Array.from(document.querySelectorAll("#aplus img")).map(

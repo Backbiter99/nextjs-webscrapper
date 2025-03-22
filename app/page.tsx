@@ -1,103 +1,123 @@
-import Image from "next/image";
+"use client";
+
+import axios from "axios";
+import { log } from "console";
+import { useEffect, useRef, useState } from "react";
+
+interface IProduct {
+    productName: string;
+    rating: string;
+    numRatings: string;
+    price: string;
+    discount: string;
+    bankOffers: string;
+    aboutItem: string;
+    productInfo: string;
+    productImg?: string[];
+    manufacturerImg: string[];
+    reviewSummary?: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    const [url, setUrl] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [product, setProduct] = useState<IProduct>();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    const handleScrape = async () => {
+        setLoading(true);
+
+        console.log(`url: ${url}`);
+
+        try {
+            const res = await axios.post(`http://localhost:3000/api/scrape`, {
+                url: url,
+            });
+            setProduct(res.data);
+        } catch (error) {
+            console.error("Failed to scrape data:", error);
+            alert("Failed to scrape product details!");
+        }
+        setLoading(false);
+    };
+
+    return (
+        <div className="p-6">
+            <h1 className="text-2xl font-bold mb-4">
+                Amazon India Product Scraper
+            </h1>
+            <input
+                type="text"
+                className="p-2 border rounded w-full"
+                placeholder="Enter Amazon India Product URL"
+                onChange={(e) => setUrl(e.target.value)}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <button
+                className="bg-blue-500 text-white p-2 mt-2 rounded cursor-pointer"
+                disabled={loading}
+                onClick={handleScrape}
+            >
+                {loading ? "Scraping..." : "Scrape Data"}
+            </button>
+
+            {product && (
+                <div className="mt-4">
+                    <h2 className="text-xl font-semibold">
+                        {product.productName}
+                    </h2>
+                    <p>Price: ₹{product.price}</p>
+                    <p>Rating: {product.rating}</p>
+                    <p>{product.numRatings}</p>
+                    <p>Discount: {product.discount}</p>
+                    <p>Offers: {product.bankOffers}</p>
+                    <h3 className="font-semibold mt-2">About this item:</h3>
+                    <p>{product.aboutItem}</p>
+
+                    {/* <h3 className="font-semibold mt-2">Product Information:</h3>
+                    <ul>
+                        {Object.entries(product.productInfo).map(
+                            ([key, value]) => (
+                                <li key={key}>
+                                    <strong>{key}:</strong> {value}
+                                </li>
+                            )
+                        )}
+                    </ul> */}
+
+                    <h3 className="font-semibold mt-2">Images:</h3>
+                    <div className="grid grid-cols-3 gap-2">
+                        {product.productImg &&
+                            product.productImg.map(
+                                (imgUrl: string, idx: number) => (
+                                    <img
+                                        key={idx}
+                                        src={imgUrl}
+                                        className="w-full"
+                                    />
+                                )
+                            )}
+                    </div>
+
+                    <h3 className="font-semibold mt-2">Manufacturer Images:</h3>
+                    <div className="grid grid-cols-3 gap-2">
+                        {product.manufacturerImg.map(
+                            (imgUrl: string, idx: number) => (
+                                <img
+                                    key={idx}
+                                    src={imgUrl}
+                                    className="w-full"
+                                />
+                            )
+                        )}
+                    </div>
+
+                    <h3 className="font-semibold mt-2">AI Review Summary:</h3>
+                    <p>
+                        {product.reviewSummary
+                            ? product.reviewSummary
+                            : "No summary"}
+                    </p>
+                </div>
+            )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
