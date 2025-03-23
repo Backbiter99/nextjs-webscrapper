@@ -82,9 +82,11 @@ export async function scrapeAmazon(url: string) {
             { status: 200 }
         );
     } catch (error) {
+        console.error("Error at /lib/scrapeAmazon:, ", error);
+
         return NextResponse.json(
             { message: "request to amazon failed" },
-            { status: 500 }
+            { status: 403 }
         );
     }
 }
