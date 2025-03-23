@@ -1,33 +1,63 @@
-# Amazon Scraper Project
+Here’s your content neatly formatted in Markdown:
 
-This project uses Puppeteer to scrape data from Amazon product pages.
+````markdown
+# 🛠️ Amazon Scraper Project
 
-## Getting Started
+This project uses **Puppeteer** to scrape data from Amazon product pages.
 
-### Step 1: Clone the Repository
+---
 
-```bash
-git clone <your-repository-url>
-cd <your-project-directory>
-```
+## 🚀 Getting Started
 
-### Step 2: Install Dependencies
+### 🔧 Step 1: Clone the Repository
 
 ```bash
-npm install
+git clone https://github.com/Backbiter99/nextjs-webscrapper.git
+cd nextjs-webscraper
 ```
+````
 
-### Step 3: Run the Scraper
+---
+
+### 🔧 Step 2: Install Dependencies
 
 ```bash
-npm run dev # or node your_main_script.js
+pnpm install
 ```
 
-## Troubleshooting
+---
 
-### Chrome Not Found Error
+### 🔧 Step 3: Set Environment Variables
 
-You might encounter the following error or something similar:
+Create a `.env` file:
+
+```bash
+touch .env
+```
+
+Add your **Huggingface API Key** to the file:
+
+```
+HUGGINGFACE_API_KEY=<YOUR API KEY>
+```
+
+👉 Replace `<YOUR API KEY>` with your actual API key.
+
+---
+
+### 🔧 Step 4: Run the Scraper
+
+```bash
+pnpm run dev # or node your_main_script.js
+```
+
+---
+
+## 🔍 Troubleshooting
+
+### ❗ Chrome Not Found Error
+
+You might encounter an error like this:
 
 ```
 Error: Could not find Chrome (ver. 134.0.6998.35). This can occur if either
@@ -47,29 +77,39 @@ For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides
   20 |         await page.goto(url, { waitUntil: "networkidle2" });
 ```
 
-This error indicates that Puppeteer cannot find a compatible Chrome browser installation.
+This error means Puppeteer can't find a compatible Chrome browser.
 
-### Solutions
+---
 
-1. **Install Chrome for Puppeteer**
+### 🛠️ Solutions
 
-    Run the following command to download and install a compatible version of Chrome:
+#### 🔹 1. Install Chrome for Puppeteer
 
-    ```bash
-    npx puppeteer browsers install chrome
-    ```
+Run this command to install Chrome:
 
-2. **Manual Install of Chrome using Puppeteer's Install Script**
+```bash
+npx puppeteer browsers install chrome
+```
 
-    In some cases, the above command may fail. As a workaround, navigate to the node_modules directory, and run Puppeteer's install script directly.
+---
 
-    ```bash
-    node node_modules/puppeteer/install.mjs
-    ```
+#### 🔹 2. Manual Chrome Install via Puppeteer Script
 
-3. **Check Cache Path**
+If the above command fails, try this as a fallback:
 
-    If you have a custom cache path, ensure it's correctly configured.
+```bash
+node node_modules/puppeteer/install.mjs
+```
 
-    Refer to the official Puppeteer configuration guide for more information:
-    https://pptr.dev/guides/configuration
+---
+
+#### 🔹 3. Check Cache Path
+
+Ensure your cache path is set up correctly.
+
+Refer to the official Puppeteer configuration guide:  
+👉 [Puppeteer Configuration Guide](https://pptr.dev/guides/configuration)
+
+---
+
+Happy scraping! 🚀✨
