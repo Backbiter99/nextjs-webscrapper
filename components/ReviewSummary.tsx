@@ -15,10 +15,11 @@ export default function ReviewSummary({
         setLoading(true);
         setError("");
         try {
-            const response = await axios.post(
-                "http://localhost:3000/api/summary",
-                { reviews }
-            );
+            const domain = process.env.DOMAIN || "";
+
+            const response = await axios.post(`${domain}/api/summary`, {
+                reviews,
+            });
 
             setSummary(response.data.summary);
         } catch (err) {

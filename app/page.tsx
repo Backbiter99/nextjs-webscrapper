@@ -11,7 +11,11 @@ interface IProduct {
     numRatings: string;
     price: string;
     discount: string;
-    bankOffers: string;
+    bankOffers: {
+        title: string;
+        description: string;
+        offerCount: string;
+    }[];
     aboutItem: string;
     productInfo: string;
     productImg?: string[];
@@ -30,7 +34,8 @@ export default function Home() {
         console.log(`url: ${url}`);
 
         try {
-            const res = await axios.post(`http://localhost:3000/api/scrape`, {
+            const domain = process.env.DOMAIN || "";
+            const res = await axios.post(`${domain}/api/scrape`, {
                 url: url,
             });
             setProduct(res.data);
@@ -39,6 +44,50 @@ export default function Home() {
             alert("Failed to scrape product details!");
         }
         setLoading(false);
+    };
+
+    const formatProductInfo = (infoString: string) => {
+        console.log(infoString);
+
+        let infoArray;
+
+        const lines = infoString.split("\n");
+
+        const parsedInfo = lines.flatMap((line) => {
+            // Second split by large spaces (2 or more spaces)
+            const parts = line.split(/\s{2,}/);
+            return parts.map((part) => part.trim()).filter(Boolean);
+        });
+
+        // Turn the array into key-value pairs
+        const result: { label: string; value: string }[] = [];
+        for (let i = 0; i < parsedInfo.length; i += 2) {
+            result.push({
+                label: parsedInfo[i],
+                value: parsedInfo[i + 1] || "",
+            });
+        }
+        infoArray = Array.from(result);
+
+        console.log(`infoArray: ${typeof infoArray}`);
+
+        return infoArray.length > 0 ? (
+            infoArray.map((line, idx) => {
+                return (
+                    <div
+                        key={idx}
+                        className="flex justify-between border-b py-1"
+                    >
+                        <span className="font-medium w-1/3">
+                            {line.label.trim()}:
+                        </span>
+                        <span className="w-2/3 pl-1">{line.value.trim()}</span>
+                    </div>
+                );
+            })
+        ) : (
+            <p>No data available</p>
+        );
     };
 
     return (
@@ -69,12 +118,30 @@ export default function Home() {
                     <p>Rating: {product.rating}</p>
                     <p>{product.numRatings}</p>
                     <p>Discount: {product.discount}</p>
-                    <p>Offers: {product.bankOffers}</p>
+                    <div>
+                        <h3 className="font-semibold mt-2">Offers:</h3>
+
+                        {product.bankOffers && product.bankOffers.length > 0 ? (
+                            <div>
+                                {product.bankOffers.map((t, i) => (
+                                    <p key={i}>
+                                        <strong>{t.title}</strong>:{" "}
+                                        {t.description}{" "}
+                                        {t.offerCount &&
+                                            `(${t.offerCount} offers)`}
+                                    </p>
+                                ))}
+                            </div>
+                        ) : (
+                            "Not available"
+                        )}
+                    </div>
+
                     <h3 className="font-semibold mt-2">About this item:</h3>
                     <p>{product.aboutItem}</p>
 
-                    <h3 className="font-semibold mt-2">Product Information:</h3>
-                    {product.productInfo}
+                    {/* <h3 className="font-semibold mt-2">Product Information:</h3>
+                    {product.productInfo} */}
                     {/* <DisplayProductInfo productInfo={product.productInfo} /> */}
                     {/* <ul>
                         {Object.entries(product.productInfo).map(
@@ -85,6 +152,19 @@ export default function Home() {
                             )
                         )}
                     </ul> */}
+
+                    <div className="p-4 border rounded-lg shadow-md">
+                        <h3 className="font-semibold text-lg mb-2 text-white">
+                            Product Information
+                        </h3>
+                        {product.productInfo ? (
+                            formatProductInfo(product.productInfo)
+                        ) : (
+                            <p className="text-white">
+                                No product information available.
+                            </p>
+                        )}
+                    </div>
 
                     <h3 className="font-semibold mt-2">Images:</h3>
                     <div className="grid grid-cols-3 gap-2">

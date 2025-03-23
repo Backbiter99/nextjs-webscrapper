@@ -15,11 +15,42 @@ export async function scrapeAmazon(url: string) {
         const $ = cheerio.load(data);
 
         const productName = $("#productTitle").text().trim();
-        const rating = $("span[data-asin]").attr("aria-label");
-        const numRatings = $("#acrCustomerReviewText").text().trim();
+        // const rating = $("span[data-asin]").attr("aria-label");
+        const rating =
+            $(".a-icon-alt").first().text().trim() || // Standard rating
+            $(".averageStarRating span").text().trim() || // Backup rating selector
+            "No rating found";
+        const numRatings = $("#acrCustomerReviewText").first().text().trim();
         const price = $("span.a-price-whole").first().text().trim();
         const discount = $("span.savingsPercentage").text().trim();
-        const bankOffers = $("#promotions_feature_div").text().trim();
+        // const bankOffers = $("#promotions_feature_div").text().trim();
+        const offers: {
+            title: string;
+            description: string;
+            offerCount: string;
+        }[] = [];
+
+        $(".a-carousel-card").each((_, element) => {
+            const title = $(element).find(".offers-items-title").text().trim();
+            const description = $(element)
+                .find(".a-truncate-full")
+                .text()
+                .trim();
+            const offerCount = $(element)
+                .find(".vsx-offers-count")
+                .text()
+                .trim();
+
+            if (title && description) {
+                offers.push({
+                    title,
+                    description,
+                    offerCount,
+                });
+            }
+        });
+
+        const bankOffers = Array.from(offers);
         const aboutItem = $("#feature-bullets ul").text().trim();
         let productInfo;
         try {
@@ -33,7 +64,7 @@ export async function scrapeAmazon(url: string) {
         }
 
         const dynamicInfo = await extractDynamicInfo(url);
-        const productImg = dynamicInfo?.imageUrl;
+        const productImg = dynamicInfo?.productImg;
         const manufacturerImg = dynamicInfo?.manufacturerImg;
         const reviews = dynamicInfo?.reviews;
 
