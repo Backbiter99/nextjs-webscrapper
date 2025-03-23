@@ -15,7 +15,6 @@ export async function scrapeAmazon(url: string) {
         const $ = cheerio.load(data);
 
         const productName = $("#productTitle").text().trim();
-        // const rating = $("span[data-asin]").attr("aria-label");
         const rating =
             $(".a-icon-alt").first().text().trim() || // Standard rating
             $(".averageStarRating span").text().trim() || // Backup rating selector
@@ -23,7 +22,6 @@ export async function scrapeAmazon(url: string) {
         const numRatings = $("#acrCustomerReviewText").first().text().trim();
         const price = $("span.a-price-whole").first().text().trim();
         const discount = $("span.savingsPercentage").text().trim();
-        // const bankOffers = $("#promotions_feature_div").text().trim();
         const offers: {
             title: string;
             description: string;
@@ -58,7 +56,6 @@ export async function scrapeAmazon(url: string) {
                 $("#productDetails_techSpec_section_1")
             );
             productInfo = extractProductInfo;
-            // console.log(`productInfo:${productInfo}`);
         } catch (error) {
             console.error("Error while getting productInfo: ", error);
         }
@@ -67,9 +64,6 @@ export async function scrapeAmazon(url: string) {
         const productImg = dynamicInfo?.productImg;
         const manufacturerImg = dynamicInfo?.manufacturerImg;
         const reviews = dynamicInfo?.reviews;
-
-        // console.log(`productImg: ${productImg}`);
-        // console.log(`manufacturerImg: ${manufacturerImg}`);
 
         return NextResponse.json(
             {

@@ -1,6 +1,5 @@
 "use client";
 
-import { DisplayProductInfo } from "@/components/DisplayProductInfo";
 import ReviewSummary from "@/components/ReviewSummary";
 import axios from "axios";
 import { useState } from "react";
@@ -34,7 +33,7 @@ export default function Home() {
         console.log(`url: ${url}`);
 
         try {
-            const domain = process.env.DOMAIN || "";
+            const domain = window.location.origin || "";
             const res = await axios.post(`${domain}/api/scrape`, {
                 url: url,
             });
@@ -47,8 +46,6 @@ export default function Home() {
     };
 
     const formatProductInfo = (infoString: string) => {
-        console.log(infoString);
-
         let infoArray;
 
         const lines = infoString.split("\n");
@@ -68,8 +65,6 @@ export default function Home() {
             });
         }
         infoArray = Array.from(result);
-
-        console.log(`infoArray: ${typeof infoArray}`);
 
         return infoArray.length > 0 ? (
             infoArray.map((line, idx) => {
@@ -139,19 +134,6 @@ export default function Home() {
 
                     <h3 className="font-semibold mt-2">About this item:</h3>
                     <p>{product.aboutItem}</p>
-
-                    {/* <h3 className="font-semibold mt-2">Product Information:</h3>
-                    {product.productInfo} */}
-                    {/* <DisplayProductInfo productInfo={product.productInfo} /> */}
-                    {/* <ul>
-                        {Object.entries(product.productInfo).map(
-                            ([key, value]) => (
-                                <li key={key}>
-                                    <strong>{key}:</strong> {value}
-                                </li>
-                            )
-                        )}
-                    </ul> */}
 
                     <div className="p-4 border rounded-lg shadow-md">
                         <h3 className="font-semibold text-lg mb-2 text-white">

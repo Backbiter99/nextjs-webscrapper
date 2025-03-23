@@ -13,61 +13,6 @@ export function extractInfo(...elements: any) {
     return {};
 }
 
-// export async function extractDynamicInfo(url: string) {
-//     try {
-//         const browser = await puppeteer.launch();
-//         const page = await browser.newPage();
-
-//         await page.goto(url, { waitUntil: "networkidle2" });
-
-//         // const imageUrl = await page.evaluate(() => {
-//         //     return Array.from(document.querySelectorAll("img")).map(
-//         //         (img) => img.src
-//         //     );
-//         // });
-
-//         const imageUrl = await page.evaluate(() => {
-//             return Array.from(document.querySelectorAll("img"))
-//                 .filter((img) => img.src.includes("m.media-amazon.com/images/"))
-//                 .map((img) => img.src);
-//         });
-
-//         // const imageUrl = await page.$$eval("img.a-button-text", (imgs) =>
-//         //     imgs.map(
-//         //         (img) =>
-//         //             img.getAttribute("data-lazyimage") ||
-//         //             img.getAttribute("src")
-//         //     )
-//         // );
-
-//         const manufacturerImg = await page.evaluate(() => {
-//             return Array.from(document.querySelectorAll("#aplus img")).map(
-//                 (img) => (img as HTMLImageElement).src
-//             );
-//         });
-
-//         const reviews = await page.evaluate(() => {
-//             return Array.from(document.querySelectorAll(".review-text-content"))
-//                 .map((el) => el.textContent?.trim())
-//                 .filter(Boolean);
-//         });
-
-//         await browser.close();
-
-//         console.log(
-//             `imageUrl: ${imageUrl} , manufacturer: ${manufacturerImg}, reviews: ${reviews}`
-//         );
-
-//         return { imageUrl, manufacturerImg, reviews };
-//     } catch (error) {
-//         console.error("Error while extracting dynamic info: ", error);
-
-//         return null;
-//     }
-// }
-
-// scraper.ts
-
 export async function extractDynamicInfo(url: string) {
     try {
         // Launch browser with anti-bot settings

@@ -15,7 +15,7 @@ export default function ReviewSummary({
         setLoading(true);
         setError("");
         try {
-            const domain = process.env.DOMAIN || "";
+            const domain = window.location.origin || "";
 
             const response = await axios.post(`${domain}/api/summary`, {
                 reviews,
